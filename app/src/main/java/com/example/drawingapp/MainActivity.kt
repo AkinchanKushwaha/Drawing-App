@@ -4,15 +4,27 @@ import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Button
 import android.widget.ImageButton
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_brush_size.*
 
 class MainActivity : AppCompatActivity() {
+
+    private var mImageButtonCurrentPaint: ImageButton? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        mImageButtonCurrentPaint = ll_paint_colors[2] as ImageButton
+        mImageButtonCurrentPaint!!.setImageDrawable(
+            ContextCompat.getDrawable(this, R.drawable.pallet_pressed)
+        )
 
         drawing_view.setSizeForBrush(10.toFloat())
         ib_brush.setOnClickListener {
@@ -27,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         val smallBtn = brushDialog.ib_small_brush
         smallBtn.setOnClickListener {
-            drawing_view.setSizeForBrush(10.toFloat())
+            drawing_view.setSizeForBrush(5.toFloat())
             brushDialog.dismiss()
         }
         val mediumBtn = brushDialog.ib_medium_brush
@@ -42,5 +54,22 @@ class MainActivity : AppCompatActivity() {
         }
 
         brushDialog.show()
+    }
+
+    fun paintClicked(view: View){
+        if(view !== mImageButtonCurrentPaint){
+            val imageButton = view as ImageButton
+
+            val colorTag = imageButton.tag.toString()
+            drawing_view.setColor(colorTag)
+            imageButton!!.setImageDrawable(
+                    ContextCompat.getDrawable(this, R.drawable.pallet_pressed)
+            )
+            mImageButtonCurrentPaint!!.setImageDrawable(
+                    ContextCompat.getDrawable(this, R.drawable.pallet_normal)
+            )
+            mImageButtonCurrentPaint = view
+        }
+
     }
 }
